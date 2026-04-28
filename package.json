@@ -1,0 +1,21 @@
+{
+  "name": "otel-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@opentelemetry/auto-instrumentations-node": "^0.73.0",
+    "@opentelemetry/exporter-prometheus": "^0.215.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.215.0",
+    "@opentelemetry/sdk-node": "^0.215.0",
+    "express": "^5.2.1",
+    "pino": "^10.3.1"
+  }
+}

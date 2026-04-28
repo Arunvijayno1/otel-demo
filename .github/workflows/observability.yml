@@ -1,0 +1,51 @@
+name: Observability Tests
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Install Node
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # Install dependencies
+      - name: Install Node dependencies
+        run: npm install
+
+      # Install Python
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: pip install requests
+
+      # Start Jaeger
+      - name: Start Jaeger
+        run: |
+          docker run -d --name jaeger \
+          -p 16686:16686 \
+          -p 4318:4318 \
+          jaegertracing/all-in-one:latest
+
+      # Start Node app
+      - name: Start App
+        run: |
+          node app.js &
+      
+      # Wait for app + telemetry
+      - name: Wait for startup
+        run: sleep 8
+
+      # Run all tests
+      - name: Run Observability Tests
+        run: python run_all_tests.py
