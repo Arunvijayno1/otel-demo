@@ -8,7 +8,7 @@ const { resourceFromAttributes } = require('@opentelemetry/resources');
 const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
 
 const traceExporter = new OTLPTraceExporter({
-  url: 'http://localhost:4318/v1/traces',
+  url: 'http://host.docker.internal:4318/v1/traces',
 });
 
 const prometheusExporter = new PrometheusExporter({

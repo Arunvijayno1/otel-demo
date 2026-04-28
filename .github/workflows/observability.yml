@@ -31,11 +31,11 @@ jobs:
 
       # Start Jaeger
       - name: Start Jaeger
-        run: |
-          docker run -d --name jaeger \
-          -p 16686:16686 \
-          -p 4318:4318 \
-          jaegertracing/all-in-one:latest
+    run: |
+    docker run -d --name jaeger \
+      --network=host \
+      -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 \
+      jaegertracing/all-in-one:latest
 
       # Start Node app
       - name: Start App
@@ -44,7 +44,7 @@ jobs:
       
       # Wait for app + telemetry
       - name: Wait for startup
-        run: sleep 8
+        run: sleep 15
 
       # Run all tests
       - name: Run Observability Tests
