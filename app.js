@@ -32,7 +32,7 @@ function getTraceInfo() {
   };
 }
 
-const { trace } = require('@opentelemetry/api');
+
 
 app.get('/test-trace', (req, res) => {
   const tracer = trace.getTracer('manual-test');
