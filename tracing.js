@@ -1,5 +1,5 @@
 'use strict';
-
+process.env.OTEL_LOG_LEVEL = 'debug';
 const { NodeSDK } = require('@opentelemetry/sdk-node');
 const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-http');
 const { PrometheusExporter } = require('@opentelemetry/exporter-prometheus');
@@ -38,5 +38,5 @@ const sdk = new NodeSDK({
 });
 
 sdk.start();
-
+console.log("Exporter URL:", 'http://localhost:4318/v1/traces');
 console.log("OpenTelemetry fully configured (Tracing + Metrics)");

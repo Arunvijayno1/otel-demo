@@ -2,7 +2,7 @@ import requests
 import time
 
 JAEGER_URL = "http://localhost:16686/api/traces?service=order-service"
-API_URL = "http://localhost:3000/orders"
+API_URL = "http://localhost:3000/test-trace"
 
 def get_trace_count():
     try:

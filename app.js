@@ -32,6 +32,16 @@ function getTraceInfo() {
   };
 }
 
+const { trace } = require('@opentelemetry/api');
+
+app.get('/test-trace', (req, res) => {
+  const tracer = trace.getTracer('manual-test');
+
+  const span = tracer.startSpan('manual-span');
+  span.end();
+
+  res.send("manual trace created");
+});
 /* =========================
    Routes
 ========================= */
