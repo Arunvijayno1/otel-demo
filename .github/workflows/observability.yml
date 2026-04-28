@@ -10,17 +10,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Install Node
+      # Setup Node
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      # Install dependencies
       - name: Install Node dependencies
         run: npm install
 
-      # Install Python
+      # Setup Python
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -29,23 +28,41 @@ jobs:
       - name: Install Python dependencies
         run: pip install requests
 
-      # Start Jaeger
+      # Start Jaeger (FIXED INDENT + HOST NETWORK)
       - name: Start Jaeger
-    run: |
-    docker run -d --name jaeger \
-      --network=host \
-      -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 \
-      jaegertracing/all-in-one:latest
+        run: |
+          docker run -d --name jaeger \
+            --network=host \
+            -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 \
+            jaegertracing/all-in-one:latest
 
-      # Start Node app
+      # Wait for Jaeger (REAL FIX)
+      - name: Wait for Jaeger
+        run: |
+          for i in {1..20}; do
+            curl -s http://localhost:16686 > /dev/null && echo "Jaeger ready" && break
+            echo "Waiting for Jaeger..."
+            sleep 3
+          done
+
+      # Start App
       - name: Start App
         run: |
           node app.js &
       
-      # Wait for app + telemetry
-      - name: Wait for startup
-        run: sleep 15
+      # Wait for app
+      - name: Wait for App
+        run: |
+          for i in {1..20}; do
+            curl -s http://localhost:3000/health > /dev/null && echo "App ready" && break
+            echo "Waiting for App..."
+            sleep 2
+          done
 
-      # Run all tests
+      # Extra buffer for telemetry
+      - name: Wait before tests
+        run: sleep 10
+
+      # Run tests
       - name: Run Observability Tests
         run: python run_all_tests.py
