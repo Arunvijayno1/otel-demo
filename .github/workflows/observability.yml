@@ -10,7 +10,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Setup Node
+      # Node setup
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -19,7 +19,7 @@ jobs:
       - name: Install Node dependencies
         run: npm install
 
-      # Setup Python
+      # Python setup
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -28,15 +28,15 @@ jobs:
       - name: Install Python dependencies
         run: pip install requests
 
-      # Start Jaeger (FIXED INDENT + HOST NETWORK)
+      # Start Jaeger
       - name: Start Jaeger
         run: |
           docker run -d --name jaeger \
-            --network=host \
-            -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 \
-            jaegertracing/all-in-one:latest
+            -p 16686:16686 \
+            -p 4318:4318 \
+            jaegertracing/all-in-one
 
-      # Wait for Jaeger (REAL FIX)
+      # Wait for Jaeger
       - name: Wait for Jaeger
         run: |
           for i in {1..20}; do
@@ -45,12 +45,29 @@ jobs:
             sleep 3
           done
 
+      # Start Prometheus
+      - name: Start Prometheus
+        run: |
+          docker run -d --name prometheus \
+            -p 9090:9090 \
+            -v ${{ github.workspace }}/prometheus.yml:/etc/prometheus/prometheus.yml \
+            prom/prometheus
+
+      # Wait for Prometheus
+      - name: Wait for Prometheus
+        run: |
+          for i in {1..20}; do
+            curl -s http://localhost:9090 > /dev/null && echo "Prometheus ready" && break
+            echo "Waiting for Prometheus..."
+            sleep 3
+          done
+
       # Start App
       - name: Start App
         run: |
           node app.js &
-      
-      # Wait for app
+
+      # Wait for App
       - name: Wait for App
         run: |
           for i in {1..20}; do
@@ -59,9 +76,17 @@ jobs:
             sleep 2
           done
 
-      # Extra buffer for telemetry
-      - name: Wait before tests
-        run: sleep 10
+      # Generate traffic
+      - name: Generate traffic
+        run: |
+          for i in {1..10}; do
+            curl http://localhost:3000/orders > /dev/null
+            sleep 1
+          done
+
+      # Wait for telemetry
+      - name: Wait for telemetry
+        run: sleep 20
 
       # Run tests
       - name: Run Observability Tests
