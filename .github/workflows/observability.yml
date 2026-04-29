@@ -10,7 +10,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Node setup
+      # -------------------------
+      # Node Setup
+      # -------------------------
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -19,7 +21,9 @@ jobs:
       - name: Install Node dependencies
         run: npm install
 
-      # Python setup
+      # -------------------------
+      # Python Setup
+      # -------------------------
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -28,15 +32,30 @@ jobs:
       - name: Install Python dependencies
         run: pip install requests
 
+      # -------------------------
       # Start Jaeger
+      # -------------------------
       - name: Start Jaeger
         run: |
           docker run -d --name jaeger \
-            -p 16686:16686 \
-            -p 4318:4318 \
-            jaegertracing/all-in-one
+            --network=host \
+            -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 \
+            jaegertracing/all-in-one:latest
 
+      # -------------------------
+      # Start Prometheus (FIXED)
+      # -------------------------
+      - name: Start Prometheus
+        run: |
+          docker run -d --name prometheus \
+            -p 9090:9090 \
+            --add-host=host.docker.internal:host-gateway \
+            -v ${{ github.workspace }}/prometheus.yml:/etc/prometheus/prometheus.yml \
+            prom/prometheus
+
+      # -------------------------
       # Wait for Jaeger
+      # -------------------------
       - name: Wait for Jaeger
         run: |
           for i in {1..20}; do
@@ -45,29 +64,16 @@ jobs:
             sleep 3
           done
 
-      # Start Prometheus
-      - name: Start Prometheus
-        run: |
-          docker run -d --name prometheus \
-            -p 9090:9090 \
-            -v ${{ github.workspace }}/prometheus.yml:/etc/prometheus/prometheus.yml \
-            prom/prometheus
-
-      # Wait for Prometheus
-      - name: Wait for Prometheus
-        run: |
-          for i in {1..20}; do
-            curl -s http://localhost:9090 > /dev/null && echo "Prometheus ready" && break
-            echo "Waiting for Prometheus..."
-            sleep 3
-          done
-
+      # -------------------------
       # Start App
+      # -------------------------
       - name: Start App
         run: |
           node app.js &
 
+      # -------------------------
       # Wait for App
+      # -------------------------
       - name: Wait for App
         run: |
           for i in {1..20}; do
@@ -76,18 +82,27 @@ jobs:
             sleep 2
           done
 
-      # Generate traffic
-      - name: Generate traffic
-        run: |
-          for i in {1..10}; do
-            curl http://localhost:3000/orders > /dev/null
-            sleep 1
-          done
+      # -------------------------
+      # Wait for Prometheus scrape
+      # -------------------------
+      - name: Wait before tests
+        run: sleep 15
+      # DEBUG START
+      - name: Debug App Metrics Endpoint
+        run: curl http://localhost:9464/metrics | head -n 20
+      
+      - name: Debug Prometheus Health
+        run: curl http://localhost:9090/-/ready
 
-      # Wait for telemetry
-      - name: Wait for telemetry
-        run: sleep 20
+      - name: Debug Prometheus Targets
+        run: curl http://localhost:9090/api/v1/targets
 
-      # Run tests
+      - name: Debug Prometheus Query
+        run: curl "http://localhost:9090/api/v1/query?query=http_server_duration_count"
+      # DEBUG END
+
+      # -------------------------
+      # Run Tests
+      # -------------------------
       - name: Run Observability Tests
         run: python run_all_tests.py
