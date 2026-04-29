@@ -5,7 +5,8 @@ import os
 tests = [
     "trace_test.py",
     "metrics_test.py",
-    "resource_test.py"
+    "resource_test.py",
+    "log_test.py"
 ]
 
 for test in tests:

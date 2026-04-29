@@ -1,5 +1,5 @@
 'use strict';
-process.env.OTEL_LOG_LEVEL = 'debug';
+
 const { NodeSDK } = require('@opentelemetry/sdk-node');
 const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-http');
 const { PrometheusExporter } = require('@opentelemetry/exporter-prometheus');
@@ -7,28 +7,25 @@ const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumenta
 const { resourceFromAttributes } = require('@opentelemetry/resources');
 const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
 
+// Trace exporter
 const traceExporter = new OTLPTraceExporter({
-  url: 'http://host.docker.internal:4318/v1/traces',
+  url: 'http://localhost:4318/v1/traces',
 });
 
+// Metrics exporter
 const prometheusExporter = new PrometheusExporter({
   port: 9464,
 });
 
+// SDK setup
 const sdk = new NodeSDK({
-  traceExporter,
-  metricReader: prometheusExporter,
+  traceExporter: traceExporter,
 
-  instrumentations: [
-    getNodeAutoInstrumentations({
-      "@opentelemetry/instrumentation-express": {
-        enabled: true
-      },
-      "@opentelemetry/instrumentation-http": {
-        enabled: true
-      }
-    })
-  ],
+  // ✅ FIX: use metricReaders (not metricReader)
+  metricReaders: [prometheusExporter],
+
+  // ✅ FIX: restore full auto instrumentation
+  instrumentations: [getNodeAutoInstrumentations()],
 
   resource: resourceFromAttributes({
     [SemanticResourceAttributes.SERVICE_NAME]: 'order-service',
@@ -38,5 +35,5 @@ const sdk = new NodeSDK({
 });
 
 sdk.start();
-console.log("Exporter URL:", 'http://localhost:4318/v1/traces');
+
 console.log("OpenTelemetry fully configured (Tracing + Metrics)");

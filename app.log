@@ -2,3 +2,15 @@
 {"level":30,"time":1777385676930,"pid":19956,"hostname":"DESKTOP-UPFM5SP","trace_id":"20961ca483cccee2492c7dd416b2b3b8","span_id":"9c054587fca44aec","msg":"Fetching orders"}
 {"level":30,"time":1777385962815,"pid":26368,"hostname":"DESKTOP-UPFM5SP","trace_id":"eb4c38b08fad6467e8d27d1814483ae6","span_id":"2d6b47391398b907","trace_flags":"01","msg":"Fetching orders"}
 {"level":30,"time":1777386181321,"pid":3852,"hostname":"DESKTOP-UPFM5SP","trace_id":"901bf7b575f6f5b2a2de3a8e7399d949","span_id":"90083e7a75712784","trace_flags":"01","msg":"Fetching orders"}
+{"level":30,"time":1777439668860,"pid":22068,"hostname":"DESKTOP-UPFM5SP","trace_id":"a4a77fbce5ece06ac5c335099c0fc378","span_id":"e2897451846fda40","trace_flags":"01","msg":"Fetching orders"}
+{"level":30,"time":1777439671762,"pid":22068,"hostname":"DESKTOP-UPFM5SP","trace_id":"85cac96dc2842761cb50b9189d6d2b29","span_id":"0d7903fe90b38770","trace_flags":"01","msg":"Fetching orders"}
+{"level":50,"time":1777439673376,"pid":22068,"hostname":"DESKTOP-UPFM5SP","trace_id":"14c65b763f2e702d95a2cb7c1e131769","span_id":"995ad9afa759333d","trace_flags":"01","msg":"Simulated failure"}
+{"level":30,"time":1777439822019,"pid":22068,"hostname":"DESKTOP-UPFM5SP","trace_id":"e42fc5a0cb043571522c08fa12a58717","span_id":"9eec01a17b19a606","trace_flags":"01","msg":"Fetching orders"}
+{"level":30,"time":1777439822030,"pid":22068,"hostname":"DESKTOP-UPFM5SP","trace_id":"725966a1310021743383f6e1200a0845","span_id":"c9aaec847f2cbf2d","trace_flags":"01","msg":"Fetching orders"}
+{"level":30,"time":1777439822042,"pid":22068,"hostname":"DESKTOP-UPFM5SP","trace_id":"29cd61412bf3649a2db9c85ffa53f9f8","span_id":"5f999ad1c9498fdc","trace_flags":"01","msg":"Fetching orders"}
+{"level":50,"time":1777439827121,"pid":22068,"hostname":"DESKTOP-UPFM5SP","trace_id":"9e3f05efc3c0dd0bf210435ff6f54f8e","span_id":"b095b3105fd5a8ec","trace_flags":"01","msg":"Simulated failure"}
+{"level":30,"time":1777439900310,"pid":22068,"hostname":"DESKTOP-UPFM5SP","trace_id":"f319d0ce4686d0d988ada67a65166556","span_id":"920807296b689fae","trace_flags":"01","msg":"Fetching orders"}
+{"level":30,"time":1777439900318,"pid":22068,"hostname":"DESKTOP-UPFM5SP","trace_id":"3db6d355125596ce64047697b0dae58d","span_id":"409a42a50699783b","trace_flags":"01","msg":"Fetching orders"}
+{"level":30,"time":1777439900328,"pid":22068,"hostname":"DESKTOP-UPFM5SP","trace_id":"e23de0e9434ff239a6f5300ff5b72820","span_id":"a294303a80414d06","trace_flags":"01","msg":"Fetching orders"}
+{"level":50,"time":1777439905376,"pid":22068,"hostname":"DESKTOP-UPFM5SP","trace_id":"82442a8f3685ed2cb8fc4e18d479fab4","span_id":"d8699c62585a9a81","trace_flags":"01","msg":"Simulated failure"}
+{"level":30,"time":1777440451489,"pid":22068,"hostname":"DESKTOP-UPFM5SP","trace_id":"996b4e686b11e3c5c63c4268804b5e5a","span_id":"7c670848fcf24195","trace_flags":"01","msg":"Fetching orders"}
